@@ -1,0 +1,17 @@
+# ESP32-S3-Touch-LCD-7
+substitutions:
+  name: "Touch-Living-Room"
+  friendly_name: "Touch Living Room"
+  room: "Living Room"
+
+# Wifi Setup
+wifi:
+  ssid: !secret Domain_Expansion
+  password: !secret F8JRXYXAHA8WM8V3
+
+# Packages
+packages:
+  setup:
+    url: https://github.com/jtenniswood/esphome-lvgl/
+    file: guition-esp32-s3-4848s040/package.yaml
+    refresh: 1sec
