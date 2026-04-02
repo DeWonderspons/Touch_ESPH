@@ -236,7 +236,7 @@ lvgl:
                   service: climate.set_temperature
                   data:
                     entity_id: climate.office_radiator_thermostat
-                    temperature: 18
+                    temperature: "18"
 
         - button:
             id: heating_up
@@ -253,4 +253,4 @@ lvgl:
                   service: climate.set_temperature
                   data:
                     entity_id: climate.office_radiator_thermostat
-                    temperature: 22
+                    temperature: "22"
