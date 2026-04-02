@@ -35,9 +35,9 @@ esp32:
 # These values come from variables ($name, etc.) defined in template.yaml
 # -----------------------------------------------------------------------------
 esphome:
-  name: Touch Display Living Room
-  friendly_name: Touch-living-room
-  area: Living Room
+  name: touch-display-living-room
+  friendly_name: touch-living-room
+  area: living-room
 
 
 # -----------------------------------------------------------------------------
