@@ -13,7 +13,11 @@ sensor:
     - !lambda 'return (int)round(id(outdoor_temperature).state);'
     - !lambda 'return (int)round(x);'
 
-# ================= PRINTER =================
+* platform: homeassistant
+  entity_id: sensor.outdoor_temperature
+  id: outdoor_temperature
+
+binary_sensor:
 
 * platform: homeassistant
   id: Bmabu_P1S_power
@@ -26,8 +30,6 @@ sensor:
   state:
   checked: !lambda return x;
 
-# ================= FILAMENT DRYER =================
-
 * platform: homeassistant
   id: filament_dryer
   entity_id: switch.filament_dryer
@@ -38,8 +40,6 @@ sensor:
   id: filament_heater_button
   state:
   checked: !lambda return x;
-
-# ================= STORAGE LIGHTS =================
 
 * platform: homeassistant
   id: ceiling
