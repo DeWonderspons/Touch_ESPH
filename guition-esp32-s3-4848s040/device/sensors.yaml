@@ -1,53 +1,197 @@
+# =============================================================================
+# SENSORS - Home Assistant State Synchronization
+# =============================================================================
+# This file creates sensors that monitor Home Assistant entities and update
+# the touchscreen buttons to reflect the current state of your smart devices.
+#
+# WHY THIS FILE EXISTS:
+# When you press a button on the touchscreen, it sends a command to Home
+# Assistant. But what if someone turns on a light using their phone, or a
+# scene activates automatically? This file ensures the touchscreen display
+# always shows the ACTUAL state of each device, not just what was last pressed.
+#
+# HOW IT WORKS:
+# 1. Each sensor subscribes to a Home Assistant entity (switch, sensor, etc.)
+# 2. When that entity's state changes, the "on_state" or "on_value" trigger fires
+# 3. The trigger updates the corresponding button in lvgl.yaml to show the new state
+#
+# KEY CONCEPTS:
+# - "platform: homeassistant" = reads state directly from Home Assistant
+# - "platform: template" = calculates a value using code (lambda)
+# - "entity_id:" = the Home Assistant device/entity to monitor
+# - "id:" = unique name to reference this sensor elsewhere in ESPHome
+# - "trigger_on_initial_state: true" = update button immediately when device boots
+# - "lvgl.widget.update" = changes how a button looks on screen
+# - "checked: !lambda return x;" = x is the sensor's boolean state (true/false)
+#
+# RELATIONSHIP TO lvgl.yaml:
+# Each sensor here has a matching button in lvgl.yaml:
+#   - This file READS state from Home Assistant → updates button appearance
+#   - lvgl.yaml SENDS commands to Home Assistant → when button is pressed
+# =============================================================================
+
+
+# =============================================================================
+# REGULAR SENSORS (Numeric Values)
+# =============================================================================
+# These sensors read numeric values like temperature and position.
+# They're used to display information or calculate other states.
+# =============================================================================
+
 sensor:
 
-* platform: homeassistant
-  entity_id: sensor.temp_living_room_temperature
-  id: living_room_temperature
-  on_value:
+  # ===========================================================================
+  # SENSOR: Office Temperature (Indoor)
+  # ===========================================================================
+  # WHAT IT MONITORS:
+  #   The temperature inside the office from sensor.office_temperature
+  #   (This could be from a smart thermostat, dedicated sensor, etc.)
+  #
+  # WHAT IT UPDATES:
+  #   The "temperatures" label in the top-left corner of the screen
+  #   Format: "outdoor° / indoor°" (e.g., "15° / 22°")
+  #
+  # HOW IT WORKS:
+  #   When the office temperature changes in Home Assistant, this sensor
+  #   receives the new value and updates the label text. It combines the
+  #   outdoor temperature (from the other sensor below) with this value.
+  #
+  # RELATED UI ELEMENT:
+  #   lvgl.yaml → temperatures label (id: temperatures)
+  # ===========================================================================
+  - platform: homeassistant
+    entity_id: sensor.temp_living_room_temperature
+    id: living_room_temperature
+    on_value:
+      - lvgl.label.update:
+          id: temperatures
+          text:
+            format: "%d° / %d°"
+            args: [ '(int)round(id(outdoor_temperature).state)', '(int)round(x)' ]
 
-  * lvgl.label.update:
-    id: temperatures
-    text:
-    format: "%d° / %d°"
-    args:
-    - !lambda 'return (int)round(id(outdoor_temperature).state);'
-    - !lambda 'return (int)round(x);'
-
-* platform: homeassistant
-  entity_id: sensor.outdoor_temperature
-  id: outdoor_temperature
+  # ===========================================================================
 
 binary_sensor:
 
-* platform: homeassistant
-  id: Bmabu_P1S_power
-  entity_id: switch.bambu_p1s
-  trigger_on_initial_state: true
-  on_state:
-  then:
-  - lvgl.widget.update:
-  id: printer_power_button
-  state:
-  checked: !lambda return x;
+  # ===========================================================================
+  # SENSOR: 3D Printer Power State
+  # ===========================================================================
+  # WHAT IT MONITORS:
+  #   Whether the 3D printer's smart plug is turned on or off
+  #   Watches: switch.office_3d_printer_power in Home Assistant
+  #
+  # WHAT IT UPDATES:
+  #   The "Printer" button's visual state (highlighted when powered on)
+  #
+  # NOTE: This monitors a "switch" entity but uses binary_sensor platform.
+  #       ESPHome treats the switch's on/off state as a binary value here.
+  #
+  # RELATED UI ELEMENT:
+  #   lvgl.yaml → printer_power_button
+  # ===========================================================================
+  - platform: homeassistant
+    id: Bmabu_P1S_power
+    entity_id: switch.bambu_p1s
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        - lvgl.widget.update:
+            id: printer_power_button
+            state:
+              checked: !lambda return x;
+        - lvgl.widget.update:
+            id: printer_power_icon
+            hidden: !lambda return x;
+        - lvgl.widget.update:
+            id: print_progress_container
+            hidden: !lambda return !x;
 
-* platform: homeassistant
-  id: filament_dryer
-  entity_id: switch.filament_dryer
-  trigger_on_initial_state: true
-  on_state:
-  then:
-  - lvgl.widget.update:
-  id: filament_heater_button
-  state:
-  checked: !lambda return x;
 
-* platform: homeassistant
-  id: ceiling
-  entity_id: light.ceiling
-  trigger_on_initial_state: true
-  on_state:
-  then:
-  - lvgl.widget.update:
-  id: storage_lights_button
-  state:
-  checked: !lambda return x;
+  # ===========================================================================
+  # SENSOR: Filament Dryer State
+  # ===========================================================================
+  # WHAT IT MONITORS:
+  #   Whether the filament dryer/heater is turned on or off
+  #   Watches: switch.office_filament_heater_893b in Home Assistant
+  #
+  # WHAT IT UPDATES:
+  #   The "Dryer" button's visual state (highlighted when running)
+  #
+  # NOTE: The filament dryer removes moisture from 3D printer filament.
+  #       Dry filament produces better quality prints.
+  #
+  # RELATED UI ELEMENT:
+  #   lvgl.yaml → filament_heater_button
+  # ===========================================================================
+  - platform: homeassistant
+    id: filament_dryer
+    entity_id: switch.filament_dryer
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        - lvgl.widget.update:
+            id: filament_dryer_button
+            state:
+              checked: !lambda return x;
+        - lvgl.widget.update:
+            id: filament_dryer_icon
+            hidden: !lambda return x;
+        - lvgl.widget.update:
+            id: filament_dryer_container
+            hidden: !lambda return !x;
+
+  # ===========================================================================
+  # SENSOR: Ceiling light state
+  # ===========================================================================
+  # WHAT IT MONITORS:
+  #   Whether the office storage area lights are on or off
+  #   Watches: light.office_storage in Home Assistant
+  #
+  # WHAT IT UPDATES:
+  #   The "Storage Lights" button's visual state (highlighted when on)
+  #
+  # NOTE: This sensor references a button (storage_lights_button) that
+  #       should be defined in lvgl.yaml. If the button doesn't exist,
+  #       add it there or remove this sensor.
+  #
+  # RELATED UI ELEMENT:
+  #   lvgl.yaml → storage_lights_button
+  # ===========================================================================
+  - platform: homeassistant
+    id: ceiling
+    entity_id: light.ceiling
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        lvgl.widget.update:
+          id: ceiling_lights_button
+          state:
+            checked: !lambda return x;
+
+  # ===========================================================================
+  # SENSOR: Network Rack Lights State
+  # ===========================================================================
+  # WHAT IT MONITORS:
+  #   Whether the network rack lights are on or off
+  #   Watches: light.office_network_rack in Home Assistant
+  #
+  # WHAT IT UPDATES:
+  #   The "Network Rack" button's visual state (highlighted when on)
+  #
+  # NOTE: This sensor references a button (network_rack_button) that
+  #       should be defined in lvgl.yaml. If the button doesn't exist,
+  #       add it there or remove this sensor.
+  #
+  # RELATED UI ELEMENT:
+  #   lvgl.yaml → network_rack_button
+  # ===========================================================================
+  - platform: homeassistant
+    id: network_rack
+    entity_id: light.office_network_rack
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        lvgl.widget.update:
+          id: network_rack_button
+          state:
+            checked: !lambda return x;
