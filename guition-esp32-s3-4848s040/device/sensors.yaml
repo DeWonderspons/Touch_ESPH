@@ -96,11 +96,11 @@ binary_sensor:
     on_state:
       then:
         - lvgl.widget.update:
-            id: bambu_power_button
+            id: bambu_power_icon
             state:
               checked: !lambda return x;
         - lvgl.widget.update:
-            id: printer_power_icon
+            id: bambu_power_icon
             hidden: !lambda return x;
 
 

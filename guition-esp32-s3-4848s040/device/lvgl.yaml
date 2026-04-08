@@ -45,7 +45,7 @@ lvgl:
             styles: control
             widgets:
               - label:
-                  id: bambu_power_button
+                  id: bambu_power_icon
                   text: "\U000F042B"
                   text_font: $icon_font
                   align: top_left
