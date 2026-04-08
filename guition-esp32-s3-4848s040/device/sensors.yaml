@@ -67,7 +67,7 @@ sensor:
           id: temperatures
           text:
             format: "%d° / %d°"
-            args: [ '(int)round(id(outdoor_temperature).state)', '(int)round(x)' ]
+            args: [ '(int)round(id(living_room_temperature).state)', '(int)round(x)' ]
 
   # ===========================================================================
 
