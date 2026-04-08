@@ -57,8 +57,9 @@ ota:
 # Without this, the device won't appear in Home Assistant.
 # The encryption key is typically set in your secrets.yaml file.
 # -----------------------------------------------------------------------------
-api: "StK49+aUE94PG58qWncO1j36apAsbBClWgsXKEMrAMk="
-
+api: 
+  encryption:
+    key: !secret api_encryption_key
 
 # -----------------------------------------------------------------------------
 # LOGGING
