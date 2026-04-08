@@ -96,7 +96,7 @@ binary_sensor:
     on_state:
       then:
         - lvgl.widget.update:
-            id: printer_power_button
+            id: bambu_power_button
             state:
               checked: !lambda return x;
         - lvgl.widget.update:
@@ -164,34 +164,8 @@ binary_sensor:
     on_state:
       then:
         lvgl.widget.update:
-          id: ceiling_lights_button
+          id: ceiling_light_button
           state:
             checked: !lambda return x;
 
   # ===========================================================================
-  # SENSOR: Network Rack Lights State
-  # ===========================================================================
-  # WHAT IT MONITORS:
-  #   Whether the network rack lights are on or off
-  #   Watches: light.office_network_rack in Home Assistant
-  #
-  # WHAT IT UPDATES:
-  #   The "Network Rack" button's visual state (highlighted when on)
-  #
-  # NOTE: This sensor references a button (network_rack_button) that
-  #       should be defined in lvgl.yaml. If the button doesn't exist,
-  #       add it there or remove this sensor.
-  #
-  # RELATED UI ELEMENT:
-  #   lvgl.yaml → network_rack_button
-  # ===========================================================================
-  - platform: homeassistant
-    id: network_rack
-    entity_id: light.office_network_rack
-    trigger_on_initial_state: true
-    on_state:
-      then:
-        lvgl.widget.update:
-          id: network_rack_button
-          state:
-            checked: !lambda return x;

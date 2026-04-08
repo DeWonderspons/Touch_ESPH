@@ -36,7 +36,7 @@ lvgl:
       widgets:
 
         - button:
-            id: printer_power_button
+            id: bambu_power_button
             grid_cell_column_pos: 2
             grid_cell_row_pos: 1
             width: $button_width
@@ -55,10 +55,10 @@ lvgl:
               - homeassistant.service:
                   service: switch.toggle
                   data:
-                    entity_id: switch.office_3d_printer_power
+                    entity_id: switch.bambu_p1s
 
         - button:
-            id: filament_heater_button
+            id: filament_dryer_button
             grid_cell_column_pos: 0
             grid_cell_row_pos: 2
             width: $button_width
@@ -77,98 +77,12 @@ lvgl:
               - homeassistant.service:
                   service: switch.toggle
                   data:
-                    entity_id: switch.office_filament_heater_893b
+                    entity_id: switch.filament_dryer
 
         - button:
-            id: extras_nav_button
+            id: ceiling_light_button
             grid_cell_column_pos: 2
             grid_cell_row_pos: 2
-            width: $button_width
-            height: $button_height_single
-            styles: control
-            widgets:
-              - label:
-                  text: $chevron_left
-                  text_font: $icon_font
-                  align: top_left
-              - label:
-                  text: "More"
-                  align: bottom_left
-            on_click:
-              - lvgl.page.show: extras_page
-
-
-    # ================= EXTRAS PAGE =================
-    - id: extras_page
-      layout:
-        type: grid
-        grid_columns: [fr(1), fr(1), fr(1)]
-        grid_rows: [fr(1), fr(1), fr(1)]
-      pad_top: 34
-      pad_all: 5
-      bg_color: Black
-
-      widgets:
-
-        - button:
-            id: extras_back_button
-            grid_cell_column_pos: 0
-            grid_cell_row_pos: 0
-            width: $button_width
-            height: $button_height_single
-            styles: control
-            widgets:
-              - label:
-                  text: $chevron_left
-                  text_font: $icon_font
-              - label:
-                  text: "Back"
-                  align: bottom_left
-            on_click:
-              - lvgl.page.show: main_page
-
-        - button:
-            id: heating_lab_nav_button
-            grid_cell_column_pos: 1
-            grid_cell_row_pos: 0
-            width: $button_width
-            height: $button_height_single
-            styles: control
-            widgets:
-              - label:
-                  text: $aircon
-                  text_font: $icon_font
-              - label:
-                  text: "Heat"
-                  align: bottom_left
-            on_click:
-              - lvgl.page.show: heating_lab_page
-
-        - button:
-            id: battery_charger_button
-            grid_cell_column_pos: 2
-            grid_cell_row_pos: 0
-            width: $button_width
-            height: $button_height_single
-            checkable: true
-            styles: control
-            widgets:
-              - label:
-                  text: $battery
-                  text_font: $icon_font
-              - label:
-                  text: "Charger"
-                  align: bottom_left
-            on_click:
-              - homeassistant.service:
-                  service: switch.toggle
-                  data:
-                    entity_id: switch.d4c5
-
-        - button:
-            id: storage_lights_button
-            grid_cell_column_pos: 0
-            grid_cell_row_pos: 1
             width: $button_width
             height: $button_height_single
             checkable: true
@@ -178,79 +92,10 @@ lvgl:
                   text: $package
                   text_font: $icon_font
               - label:
-                  text: "Storage"
+                  text: "Ceiling"
                   align: bottom_left
             on_click:
               - homeassistant.service:
                   service: light.toggle
                   data:
-                    entity_id: light.office_storage
-
-
-    # ================= HEATING PAGE =================
-    - id: heating_lab_page
-      layout:
-        type: flex
-        flex_flow: column
-      bg_color: 0x1E1E1E
-
-      widgets:
-
-        - button:
-            id: heating_back
-            width: 60
-            height: 60
-            x: 5
-            y: 34
-            styles: control
-            widgets:
-              - label:
-                  text: $chevron_left
-                  text_font: $icon_font
-            on_click:
-              - lvgl.page.show: extras_page
-
-        - label:
-            text: "Heating"
-            align: center
-            y: -40
-            text_color: 0xE06A2A
-
-        - label:
-            id: heating_target
-            text: "--.-°C"
-            align: center
-
-        - button:
-            id: heating_down
-            width: 80
-            height: 80
-            align: center
-            y: 60
-            widgets:
-              - label:
-                  text: "-"
-                  align: center
-            on_click:
-              - homeassistant.service:
-                  service: climate.set_temperature
-                  data:
-                    entity_id: climate.office_radiator_thermostat
-                    temperature: "18"
-
-        - button:
-            id: heating_up
-            width: 80
-            height: 80
-            align: center
-            y: 150
-            widgets:
-              - label:
-                  text: "+"
-                  align: center
-            on_click:
-              - homeassistant.service:
-                  service: climate.set_temperature
-                  data:
-                    entity_id: climate.office_radiator_thermostat
-                    temperature: "22"
+                    entity_id: light.ceiling
