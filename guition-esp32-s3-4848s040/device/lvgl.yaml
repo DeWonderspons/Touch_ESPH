@@ -45,7 +45,8 @@ lvgl:
             styles: control
             widgets:
               - label:
-                  text: $printer
+                  id: printer_icon
+                  text: "\U000F042B"
                   text_font: $icon_font
                   align: top_left
               - label:
@@ -67,7 +68,8 @@ lvgl:
             styles: control
             widgets:
               - label:
-                  text: $filament
+                  id: filament_dryer_icon
+                  text: "\U000F07DE"
                   text_font: $icon_font
                   align: top_left
               - label:
@@ -89,7 +91,8 @@ lvgl:
             styles: control
             widgets:
               - label:
-                  text: $package
+                  id: ceiling_light_icon
+                  text: "\U000F0335"
                   text_font: $icon_font
               - label:
                   text: "Ceiling"
